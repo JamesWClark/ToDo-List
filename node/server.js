@@ -13,7 +13,7 @@ var ObjectID = mongodb.ObjectID;
 var keyCache = {}; // public key cache
 
 const MONGO_URL = 'mongodb://localhost:27017/todo';
-const CLIENT_ID = fs.readFileSync('client_id', utf8);
+const CLIENT_ID = fs.readFileSync('client_id', 'utf8');
 
 /**
  * MongoDB operations
