@@ -13,7 +13,7 @@ var ObjectID = mongodb.ObjectID;
 var keyCache = {}; // public key cache
 
 const MONGO_URL = 'mongodb://localhost:27017/todo';
-const CLIENT_ID = '570807057244-dgdihgn2co89soo39sb6td3o2j0m6f5p.apps.googleusercontent.com';
+const CLIENT_ID = fs.readFileSync('client_id', utf8);
 
 /**
  * MongoDB operations
@@ -27,49 +27,42 @@ Mongo.connect(MONGO_URL, function(err, db) {
     
     Mongo.ops.find = function(collection, json, callback) {
         db.collection(collection).find(json).toArray(function(error, docs) {
-            // TODO: handle err
             if(callback) callback(error, docs);
         });
     };
     
     Mongo.ops.findOne = function(collection, json, callback) {
         db.collection(collection).findOne(json, function(error, doc) {
-            // TODO: handle err
             if(callback) callback(error, doc);
         });
     };
 
     Mongo.ops.insert = function(collection, json, callback) {
         db.collection(collection).insert(json, function(error, result) {
-            // TODO: handle err
             if(callback) callback(error, result);
         });
     };
 
     Mongo.ops.upsert = function(collection, query, json, callback) {
         db.collection(collection).updateOne(query, { $set: json }, { upsert: true }, function(error, result) {
-            // TODO: handle err
             if (callback) callback(error, result);
         });
     };
     
     Mongo.ops.updateOne = function(collection, query, json, callback) {
         db.collection(collection).updateOne(query, { $set : json }, function(error, result) {
-            // TODO: handle err
             if(callback) callback(error, result);
         });
     };
     
     Mongo.ops.deleteOne = function(collection, query, callback) {
         db.collection(collection).deleteOne(query, function(error, result) {
-            // TODO: handle err
             if(callback) callback(error, result);
         });
     };
     
     Mongo.ops.deleteMany = function(collection, query, callback) {
         db.collection(collection).deleteMany(query, function(error, result) {
-            // TODO: handle err
             if(callback) callback(error, result);
         });
     };
