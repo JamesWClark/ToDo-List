@@ -87,10 +87,12 @@ app.use(allowCrossDomain);
 app.use(authorize);
 
 app.post('/login', function(req, res) {
-    log('/login req.body = ', req.body);
     var query = { id: req.body.id };
-    Mongo.ops.upsert('login', query, req.body);
-    res.status(201).send('ok');
+    Mongo.ops.upsert('login', query, req.body, function(error, result) {
+      log('/login req.body = ', req.body);
+      if(error) res.status(500).send(error);
+      else res.status(201).send(result);      
+    });
 });
 
 app.post('/task', function(req, res) {
