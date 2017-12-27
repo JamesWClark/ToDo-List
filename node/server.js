@@ -68,8 +68,6 @@ Mongo.connect(MONGO_URL, function(err, db) {
     };
 });
 
-
-
 // web server
 var app = express();
 
