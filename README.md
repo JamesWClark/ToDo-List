@@ -16,7 +16,7 @@ Change to the `node` directory:
 
     cd Todo-List/node
 
-Install required dependencies (see [https://github.com/JamesWClark/ToDo-List/blob/master/node/package.json](package.json) for a list):
+Install required dependencies (see [package.json](https://github.com/JamesWClark/ToDo-List/blob/master/node/package.json) for a list):
 
     npm install
 
