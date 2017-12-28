@@ -14,7 +14,7 @@ var keyCache = {}; // public key cache
 
 const MONGO_URL = 'mongodb://localhost:27017';
 const DB_NAME = 'todo';
-const CLIENT_ID = fs.readFileSync('client_id', 'utf8');
+const CLIENT_ID = fs.readFileSync(__dirname + '/client_id', 'utf8');
 
 /**
  * MongoDB operations
