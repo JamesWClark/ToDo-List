@@ -12,16 +12,19 @@ var ObjectID = mongodb.ObjectID;
 
 var keyCache = {}; // public key cache
 
-const MONGO_URL = 'mongodb://localhost:27017/todo';
+const MONGO_URL = 'mongodb://localhost:27017';
+const DB_NAME = 'todo';
 const CLIENT_ID = fs.readFileSync('client_id', 'utf8');
 
 /**
  * MongoDB operations
  * connects to MongoDB and registers a series of asynchronous methods
  */
-Mongo.connect(MONGO_URL, function(err, db) {
-    
-    // TODO: handle err
+Mongo.connect(MONGO_URL, function(err, client) {
+  
+    log('what is err? ', err);
+  
+    const db = client.db(DB_NAME);
 
     Mongo.ops = {};
     
@@ -70,8 +73,11 @@ Mongo.connect(MONGO_URL, function(err, db) {
 
 // web server
 var app = express();
+var webroot = __dirname + '/../client/';
+var port = 3000;
 
 // use middlewares
+app.use('/', express.static(webroot));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(allowCrossDomain);
