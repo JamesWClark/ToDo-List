@@ -3,15 +3,15 @@
 // READ : http://stackoverflow.com/questions/3105296/if-rest-applications-are-supposed-to-be-stateless-how-do-you-manage-sessions
 // READ : http://www.cloudidentity.com/blog/2014/03/03/principles-of-token-validation/
 
-// this statement is a redirect for brackets development
+// give an error message on pseudo loopback interface
 if (window.location.hostname === '127.0.0.1') {
     $('#app').html('Google Web Login requires `localhost` and not `127.0.0.1`. Try <a href="http://localhost:1898/client">here</a> instead.');
     $('#app').show();
 }
 
-// prepends the url of node.js server
-function route(url) {
-    return 'http://localhost:3000' + url;
+// prepends the url of node.js server to any path
+function route(path) {
+    return 'http://localhost:3000' + path;
 }
 
 var profile; // google user profile
