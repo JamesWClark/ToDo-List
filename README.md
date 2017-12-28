@@ -24,18 +24,15 @@ Run the app:
 
     node server
     
-*Note: Cross origin support is available out of the box, but it can be disabled by removing or commenting out the line of code `app.use(allowCrossDomain);` from `node/server.js`. To test cross origin, run the `client` folder from another web server. The `client/client.js` script uses a `route` function to pass all requests to `localhost:3000`.*
+Note: Cross origin support is available out of the box, but it can be disabled by removing or commenting out the line of code `app.use(allowCrossDomain);` from `node/server.js`. To test cross origin, run the `client` folder from another web server. The `client/client.js` script uses a `route` function to pass all requests to `localhost:3000`.
 
     // prepends the url of node.js server
     function route(url) {
         return 'http://localhost:3000' + url;
     }
   
-*Therefore, if a port change is necessary then it must be matched in both `client/client.js` and `node/server.js`.*
-  
-  
-  
-  
+Therefore, if a port change is necessary then it must be matched in both `client/client.js` and `node/server.js`.  
+
 Favicon source:  
 https://pixabay.com/p-27781/  
 https://pixabay.com/en/write-writing-pencil-paper-27781/  
