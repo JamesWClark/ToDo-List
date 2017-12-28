@@ -5,10 +5,11 @@
 
 // this statement is a redirect for brackets development
 if (window.location.hostname === '127.0.0.1') {
-    window.location = 'http://localhost:1898';
+    $('#app').html('Google Web Login requires `localhost` and not `127.0.0.1`. Try <a href="http://localhost:1898/client">here</a> instead.');
+    $('#app').show();
 }
 
-// prepend the url of node.js server
+// prepends the url of node.js server
 function route(url) {
     return 'http://localhost:3000' + url;
 }
