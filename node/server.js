@@ -1,19 +1,27 @@
-var fs = require('fs'); // file systems
-var jwt = require('jsonwebtoken'); // json web tokens
-var http = require('http'); // http protocol
-var express = require('express'); // web server
-var request = require('request'); // http trafficer
-var jwkToPem = require('jwk-to-pem'); // converts json web key to pem
-var bodyParser = require('body-parser'); // http body parser
-var mongodb = require('mongodb'); // MongoDB driver
+// TODO: https://stackoverflow.com/questions/17769011/how-does-cookie-based-authentication-work
+// TODO: https://developers.google.com/identity/sign-in/web/server-side-flow
+// READ: https://community.auth0.com/questions/10010/clarification-on-token-usage
+// REF: https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=ya29.GlsyBVAdGpJyOBOtE-35zDrVqFXEefrh8spD1TTeP7GAh7pwkNfIlADnd93Mn4UVQl7uCQIxZb8-6S5VQqyv3ANiDyE-t0HQLnCMy6gyRiyL3aStWvWO_MKogJE4
+// READ: https://developers.google.com/identity/protocols/OAuth2
+// READ: https://en.wikipedia.org/wiki/OAuth
+// READ: https://groups.google.com/forum/#!topic/firebase-talk/rjR0zYiiEhM
 
-var Mongo = mongodb.MongoClient;
-var ObjectID = mongodb.ObjectID;
+var fs          = require('fs'); // file systems
+var jwt         = require('jsonwebtoken'); // json web tokens
+var http        = require('http'); // http protocol
+var express     = require('express'); // web server
+var request     = require('request'); // http trafficer
+var jwkToPem    = require('jwk-to-pem'); // converts json web key to pem
+var bodyParser  = require('body-parser'); // http body parser
+var mongodb     = require('mongodb'); // MongoDB driver
 
-var keyCache = {}; // public key cache
+var Mongo       = mongodb.MongoClient;
+var ObjectID    = mongodb.ObjectID;
+
+var keyCache    = {}; // public key cache
 
 const MONGO_URL = 'mongodb://localhost:27017';
-const DB_NAME = 'todo';
+const DB_NAME   = 'todo';
 const CLIENT_ID = fs.readFileSync(__dirname + '/client_id', 'utf8');
 
 /**
@@ -156,8 +164,8 @@ function allowCrossDomain(req, res, next) {
 }
 
 /**
- * Middlware:
- * validate tokens and authorize users
+ * Middleware:
+ * validates tokens and authorizes users
  */
 function authorize(req, res, next) {
 
@@ -196,6 +204,19 @@ function authorize(req, res, next) {
         res.writeHead(401);
         res.end();
     }
+}
+
+/**
+ * Generate a random token of length n
+ */
+function generateToken(n) {
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var token = '';
+    for(var i = 0; i < n; i++) {
+        var randomCharIndex = Math.floor(Math.random() * chars.length);
+        token += chars[randomCharIndex];
+    }
+    return token;
 }
 
 /**
