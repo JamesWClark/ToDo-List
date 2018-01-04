@@ -5,9 +5,6 @@
 // TODO : https://jsfiddle.net/JamesWClark/8p8subj9/
 // CLIENT API: https://developers.google.com/identity/sign-in/web/reference#gapiauth2authresponse
 
-// CRITICAL TODO: https://stackoverflow.com/a/37580494/1161948
-
-
 var profile; // google user profile
 var authResponse; // google user auth response
 
@@ -18,6 +15,18 @@ function start() {
             // Scopes to request in addition to 'profile' and 'email'
             //scope: 'additional_scope'
         })
+        
+        // pending testing: https://stackoverflow.com/a/37580494/1161948
+        // Listen for changes to current user.
+        // (called shortly before expiration)
+        auth2.currentUser.listen(function(googleUser){
+            console.log(moment().format() + ': listener has fired an event');
+            console.log('time to compare tokens');
+            authResponse = googleUser.getAuthResponse();
+            console.log(JSON.stringify(parseJwt(authResponse.id_token)));
+            profile = googleUser.getBasicProfile();
+            
+        });
     })
 }
 
@@ -39,8 +48,9 @@ $('#signinButton').click(function() {
 
 function onSignIn(googleUser) {
     
-    // true = include access_token, see: https://stackoverflow.com/a/44773920/1161948
-    authResponse = googleUser.getAuthResponse(true); 
+    // pass a true parameter = include access_token, see: https://stackoverflow.com/a/44773920/1161948
+    // authResponse = googleUser.getAuthResponse(true); 
+    authResponse = googleUser.getAuthResponse(); 
     profile = googleUser.getBasicProfile();
     
     console.log('googleUser = ', googleUser);
@@ -215,6 +225,13 @@ $('#app').on('click', '.well .glyphicon-trash', function() {
     });
 });
 
+// https://stackoverflow.com/a/38552302/1161948
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace('-', '+').replace('_', '/');
+    return JSON.parse(atob(base64));
+};
+
 // give an error message on pseudo loopback interface
 if (window.location.hostname === '127.0.0.1') {
     $('#app').html('Google Web Login requires `localhost` and not `127.0.0.1`. Try <a href="http://localhost:1898/client">here</a> instead.');
@@ -224,8 +241,27 @@ if (window.location.hostname === '127.0.0.1') {
 // detect awake from computer sleep, used to refresh auth tokens
 var wakeWorker = new Worker('workers/detect-wake.js');
 wakeWorker.onmessage = function (ev) {
-  if (ev && ev.data === 'wakeup') {
-     console.log('awake');
-      // TODO: refresh auth token if it's expired
-  }
+    if (ev && ev.data === 'wakeup') {
+        console.log('computer woke from sleep');
+        
+        // pending testing: https://stackoverflow.com/a/37580494/1161948
+        if (auth2.isSignedIn.get() == true) {
+            console.log('user is signed in');
+            console.log('check the id token expiry ' + authResponse.id_token);
+            console.log('parsed = ' + JSON.stringify(parseJwt(authResponse.id_token)));
+            // example: http://www.jsonmate.com/permalink/5a4d0b57a35702c60cc60d4c
+            
+            var jwt = parseJwt(authResponse.id_token);
+            var now = moment(); 
+            var exp = moment(parseInt('' + jwt.exp + '000'));
+            console.log('expiry is ' + exp);
+            console.log('now is ' + now);
+            if(now.isSame(exp) || now.isAfter(exp)) {
+                console.log('time to refresh the token');
+                gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse().then(function() {
+                    console.log('check it now - ' + JSON.stringify(parseJwt(authResponse.id_token)));
+                });
+            }
+        }
+    }
 }
