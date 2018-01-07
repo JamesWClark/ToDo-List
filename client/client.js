@@ -57,6 +57,8 @@ function onSignIn(googleUser) {
     console.log('profile = ', profile);
     console.log('authResponse = ', authResponse);
 
+    writeCookie('idtoken', authResponse.id_token);
+
     var login = {
         id: profile.getId(),
         accessToken: authResponse.access_token,
@@ -225,6 +227,35 @@ $('#app').on('click', '.well .glyphicon-trash', function() {
     });
 });
 
+// bakes cookies
+function writeCookie(key, value) {
+    // expire in six months
+    var exp = moment().add(6, 'month').utc().toString();
+    document.cookie = key + '=' + value + ';expires=' + exp + ';path=/';
+}
+
+// reads cookies
+// https://stackoverflow.com/a/5639455/1161948
+(function(){
+    var cookies;
+
+    function readCookie(name,c,C,i){
+        if(cookies){ return cookies[name]; }
+
+        c = document.cookie.split('; ');
+        cookies = {};
+
+        for(i=c.length-1; i>=0; i--){
+           C = c[i].split('=');
+           cookies[C[0]] = C[1];
+        }
+
+        return cookies[name];
+    }
+
+    window.readCookie = readCookie; // or expose it however you want
+})();
+
 // https://stackoverflow.com/a/38552302/1161948
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
@@ -237,6 +268,8 @@ if (window.location.hostname === '127.0.0.1') {
     $('#app').html('Google Web Login requires `localhost` and not `127.0.0.1`. Try <a href="http://localhost:1898/client">here</a> instead.');
     $('#app').show();
 }
+
+console.log('cookie = ' + readCookie('idtoken'));
 
 // detect awake from computer sleep, used to refresh auth tokens
 var wakeWorker = new Worker('workers/detect-wake.js');
